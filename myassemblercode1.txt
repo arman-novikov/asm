@@ -1,0 +1,122 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+
+Include kernel32.inc
+Include masm32.inc
+
+IncludeLib kernel32.lib
+IncludeLib masm32.lib
+
+         .CONST
+MsgExit  DB    "Press Enter to Exit",0AH,0DH,0
+
+         .DATA
+zaprosA DB 'input value a:', 13,10,0
+zaprosB DB 'input value b:', 13,10,0
+Result DB 13,10, 'Result='
+ReeStr DB 16 dup (' '), 0
+
+zero SWORD 0
+ten  SWORD 10
+
+buffer DB 10 dup ('0')
+
+         .DATA?
+inbuf    DB    100 DUP (?)
+
+x SDWORD ?
+a SDWORD ?
+b SDWORD ?
+
+         .CODE
+Start:
+
+XOR    EAX,EAX
+
+vvod:
+        Invoke StdOut, ADDR zaprosA
+        Invoke StdIn, ADDR buffer, lengthof buffer
+        
+        Invoke StripLF, ADDR buffer
+        Invoke atol, ADDR buffer
+        
+        mov a, EAX
+        
+        XOR    EAX,EAX
+        
+        Invoke StdOut, ADDR zaprosB
+        Invoke StdIn, ADDR buffer, lengthof buffer
+        
+        Invoke StripLF, ADDR buffer
+        Invoke atol, ADDR buffer
+        
+        mov b, EAX
+        
+        XOR    EAX,EAX
+        XOR    ECX,ECX
+        
+        cmp a, 10
+        JG gross
+        
+        cmp a, 10
+        JNG ngross
+        
+        
+        gross:
+        
+                mov ECX, b
+                jcxz m1
+                DEC ECX
+                
+                mov EAX, a
+                begin_loop1:
+                MUL EAX
+                LOOP begin_loop1
+                
+                INC EAX
+                mov x, EAX
+                
+
+                jmp m1
+        ngross:
+               
+        cmp a,0
+        JNL zeroten
+                
+                mov EAX, b
+                mov x, EAX
+                jmp m1
+        
+        
+        zeroten:
+                 
+                mov ECX, a
+                mov EAX, b
+                DEC ECX
+                jcxz m1
+                begin_loop2:
+                MUL b
+                LOOP begin_loop2
+                DEC EAX
+                mov x, EAX
+                jmp m1
+               
+   
+     
+     
+     m1:
+     
+     Invoke dwtoa, x, ADDR ReeStr
+     Invoke StdOut, ADDR Result
+        
+        
+         
+        Invoke StdOut,ADDR MsgExit
+        Invoke StdIn,ADDR inbuf,LengthOf inbuf		
+	
+         Invoke ExitProcess,0
+         
+         End    Start
+

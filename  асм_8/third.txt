@@ -1,0 +1,32 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+         
+         .CODE
+         
+         third proc c
+            push EBP
+            mov  EBP,ESP
+            push EAX
+            push EBX
+            push EDX
+            mov  EDX, [EBP+8]
+            mov  EBX, [EBP+12]
+            mov  EAX, [EBP+16]
+            add  EBX, EDX
+            inc  EBX
+            inc  EBX
+            
+            mov [EAX], EBX
+            
+            pop EDX
+            pop EBX
+            pop EAX
+            mov ESP, EBP
+            pop EBP
+             
+             ret
+
+         third endp
+         end

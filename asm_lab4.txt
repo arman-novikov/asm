@@ -1,0 +1,146 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+
+Include kernel32.inc
+Include masm32.inc
+
+IncludeLib kernel32.lib
+IncludeLib masm32.lib
+
+         .CONST
+MsgExit  DB    "Press Enter to Exit",0AH,0DH,0
+
+         .DATA
+A    SDWORD 1,   2,  3,  4,  5,  6
+     SDWORD 11, 12, 13, 14, 15, 16
+     SDWORD 21, 22, 23, 24, 25, 26
+     SDWORD 31, 32, 33, 34, 35, 36
+     SDWORD 41, 42, 43, 44, 45, 46
+     SDWORD 51, 52, 53, 54, 55, 56
+
+ReeStr DB 46 dup (' '),0
+space DB  ' ',0
+newline DB ' ', 13,10,0
+     
+         .DATA?
+inbuf    DB    100 DUP (?)
+
+dump      sdword ?
+count     sword ?
+
+         .CODE
+Start:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+         XOR    EAX,EAX
+         
+
+
+lea EBX,A
+mov ECX,6
+
+cycleex:
+push ECX         
+mov ECX,6         
+cyclein:
+        
+        mov EAX, 0[EBX]
+        mov dump, EAX
+        add EBX, 4
+        
+        push ECX
+        push EBX
+        push EAX
+        Invoke dwtoa, dump, ADDR ReeStr
+        Invoke StdOut, ADDR ReeStr
+        
+        Invoke StdOut, ADDR space
+        pop EAX
+        pop EBX
+        pop ECX
+        loop cyclein
+        Invoke StdOut, ADDR newline
+        pop ECX
+        loop cycleex
+        
+         
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  XOR EAX,EAX
+  XOR ECX,ECX
+  XOR EBX,EBX
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+lea EBX,A
+;mov count,0
+mov EAX,0
+mov ECX,6
+mov EDX,0
+countingex:
+    push  EBX
+    push  ECX
+    mov   ECX,6
+    
+    countingin:
+        add  EAX, 0[EBX]
+        add  EBX, 24
+        loop countingin        
+        mov  A[EDX], EAX
+        pop  ECX
+        pop  EBX
+        add  EBX,4
+        XOR  EAX,EAX
+        add  EDX,28 
+        loop countingex
+          
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  XOR EAX,EAX
+  XOR ECX,ECX
+  XOR EBX,EBX
+  
+  Invoke StdOut, ADDR newline
+  Invoke StdOut, ADDR newline
+  Invoke StdOut, ADDR newline
+  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+lea EBX,A
+mov ECX,6
+
+cycleex1:
+push ECX         
+mov ECX,6         
+cyclein1:
+        
+        mov EAX, 0[EBX]
+        mov dump, EAX
+        add EBX, 4
+        
+        push ECX
+        push EBX
+        push EAX
+        Invoke dwtoa, dump, ADDR ReeStr
+        Invoke StdOut, ADDR ReeStr
+        
+        Invoke StdOut, ADDR space
+        pop EAX
+        pop EBX
+        pop E4
+        loop cyclein1
+        Invoke StdOut, ADDR newline
+        pop ECX
+        loop cycleex1
+
+      
+         Invoke StdOut,ADDR MsgExit
+         Invoke StdIn,ADDR inbuf,LengthOf inbuf		
+	
+         Invoke ExitProcess,0
+         End    Start
+

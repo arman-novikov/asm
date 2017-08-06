@@ -1,0 +1,23 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+         
+         .DATA
+         EXTERN dump:DWORD, G:DWORD
+         
+         
+         .CODE
+         
+         fourth proc
+         
+         mov EAX, [dump]
+         add EAX, [dump+4]
+         add EAX,3
+         mov G,EAX 
+             
+             ret
+
+         fourth endp
+         
+         end

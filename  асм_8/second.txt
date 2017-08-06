@@ -1,0 +1,20 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+         
+         .DATA
+         
+         EXTERN A:DWORD, B:DWORD, E:DWORD
+         .CODE
+         
+        second proc c 
+        XOR EDX,EDX
+        add EDX,A
+        add EDX,B
+        inc EDX
+        mov E,EDX
+        ret
+        
+        second endp
+        end

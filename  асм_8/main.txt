@@ -1,0 +1,125 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+
+Include kernel32.inc
+Include masm32.inc
+
+IncludeLib kernel32.lib
+IncludeLib masm32.lib
+
+         .CONST
+MsgExit  DB     "Press Enter to Exit",0AH,0DH,0
+Dtext    DB     " this is D: ",0AH,0DH,0
+Etext    DB     " this is E: ",0AH,0DH,0
+Ftext    DB     " this is F: ",0AH,0DH,0
+Gtext    DB     " this is G: ",0AH,0DH,0
+
+         .DATA
+
+ReeStr DB 46 dup (' '),0
+space DB  ' ',0
+newline DB ' ', 13,10,0
+tabl DWORD 4 dup (?)
+EXTERN first:near
+EXTERN second:near
+EXTERN third:near
+EXTERN fourth:near
+
+
+A   DWORD    1
+B   DWORD    2
+E   DWORD    0;a+b+1
+G   DWORD    0             ;a+b+3
+dump DWORD   0
+public A,B, E,G, dump
+         .DATA?
+inbuf    DB    100 DUP (?)
+D   DWORD ?             ;a+b
+F   DWORD ?             ;a+b+2
+
+
+
+
+         .CODE
+Start:
+;      
+;    Add you statements
+;
+           XOR EAX,EAX
+           XOR EBX,EBX
+           XOR EDX,EDX
+           
+         mov EAX,A
+         mov EBX,B
+         lea EDX,D
+         
+         
+         CALL first
+         mov    D,EAX
+         
+         Invoke StdOut,ADDR Dtext
+         Invoke dwtoa, D, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         
+         
+
+         CALL second
+         mov    E,EDX
+         Invoke StdOut,ADDR Etext
+         Invoke dwtoa, E, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         
+         
+
+
+         lea  EAX,F
+         push EAX
+         push B
+         push A 
+         CALL third
+
+         Invoke StdOut,ADDR Ftext
+         Invoke dwtoa, F, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         
+         
+         
+         ;fourth
+         
+         lea EAX, tabl
+         mov dump, EAX
+
+         
+         mov EAX, A
+         mov [dump], EAX
+         
+         mov EAX, B
+         mov [dump+4], EAX
+         
+
+         call fourth
+                
+         Invoke StdOut,ADDR Gtext
+         Invoke dwtoa, G, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         
+         
+         
+         ;end
+         Invoke StdOut,ADDR MsgExit
+         Invoke StdIn,ADDR inbuf,LengthOf inbuf		
+	
+         Invoke ExitProcess,0
+                       
+        
+         
+
+     
+End    Start
+

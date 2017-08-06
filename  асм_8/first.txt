@@ -1,0 +1,14 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+         
+         .CODE
+         
+         first proc c 
+             add EAX, EBX
+             mov [EDX], EAX         
+             ret
+
+         first endp
+         end

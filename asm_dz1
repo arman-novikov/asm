@@ -1,0 +1,101 @@
+; Template for console application
+         .586
+         .MODEL  flat, stdcall
+         OPTION CASEMAP:NONE
+
+Include kernel32.inc
+Include masm32.inc
+
+IncludeLib kernel32.lib
+IncludeLib masm32.lib
+
+         .CONST
+MsgExit  DB    "Press Enter to Exit",0AH,0DH,0
+
+         .DATA
+A BYTE   "Hello, Petya, how are you?", 0
+B BYTE   "eyuioa*",0
+
+newline DB ' ', 13,10,0
+ReeStr DB 46 dup (' '),
+
+         .DATA?
+inbuf    DB    100 DUP (?)
+dump     dword  ?
+
+         .CODE
+Start:
+; 
+;    Add you statements
+;
+         XOR    EAX,EAX ; dlya symbola
+         XOR    EBX,EBX ; dlya glasnih 
+         XOR    EDX,EDX ; dlya podsheta bukv
+         XOR    ECX,ECX ; dlya cicklov
+         
+         lea EDX, A
+         
+begin:
+         mov AL, 0[EDX]  ;vstali na pervi symbol
+         cmp AL,0
+         je exit
+         
+middle:
+         cmp AL, ' '
+         jne last
+         
+         ; vivod na monitor
+         push ECX
+         push EAX
+         push EDX
+         Invoke dwtoa, EBX, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         pop EDX
+         pop EAX
+         pop ECX
+         
+         ; obnulyaem EBX
+         XOR EBX, EBX
+         INC EDX
+         jmp begin
+         
+         
+        
+last:
+
+        mov ECX, 7
+        lea EDI, B
+        cld
+        REPNE SCASB
+        INC EDX
+        cmp ECX, 0
+        je begin        
+        INC EBX
+        jmp begin
+         
+         
+         
+         
+exit:        
+         push ECX
+         push EAX
+         push EDX
+         Invoke dwtoa, EBX, ADDR ReeStr
+         Invoke StdOut, ADDR ReeStr
+         Invoke StdOut, ADDR newline
+         pop EDX
+         pop EAX
+         pop ECX
+         
+         Invoke StdOut,ADDR MsgExit
+         Invoke StdIn,ADDR inbuf,LengthOf inbuf		
+	
+         Invoke ExitProcess,0
+         End    Start
+
+
+INCR:   INC EBX
+        INC EDX
+        jmp begin
+
